@@ -1,0 +1,42 @@
+bald_eagles <- read_csv("Documents/r programing (lis4370)/bald_eagles.csv")
+library(plyr)
+head(bald_eagles)
+
+#calculates mean hours per count of bald eagles
+eagle_mean <- ddply(
+  bald_eagles,
+  'count',
+  summarise,
+  avgcount = mean(hours)
+)
+#printing result:
+eagle_mean
+
+#grouped mean into text file
+write.table(
+  eagle_mean,
+  file = 'eagle_mean.txt',
+  sep = '\t',
+  row.names = FALSE
+)
+
+#excludes result where count=5
+i_eagles <- subset(
+  bald_eagles,
+  grepl("5", count, ignore.case = TRUE)
+)
+
+#csv
+write.csv(
+  i_eagles$count,
+  file      = "i_eagles_count.csv",
+  row.names = FALSE,
+  quote     = FALSE
+)
+
+#csv
+write.csv(
+  i_eagles,
+  file = "i_eagles_full.csv",
+  row.names = FALSE
+)
