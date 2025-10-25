@@ -1,0 +1,44 @@
+oysters <- read.csv("Documents/r programing (lis4370)/Oysters.csv")
+
+data("oysters")
+head(oysters)
+
+#1 BASE R GRAPHICS
+#scatter plot
+plot(oysters$Weight, oysters$Volume,
+     main   = "base: weight vs. volume",
+     xlab   = "weight",
+     ylab   = "volume")
+
+#histogram (this doesn't actually create a histogram, rather a bar chart)
+hist(oysters$Weight,
+     main   = "base: distribution of weight",
+     xlab   = "weight")
+
+#2 LATTICE GRAPHICS
+library(lattice)
+
+#conditional scatter plot (small multiples)
+xyplot(Volume ~ Weight | factor(ID), #i used ID because this dataset doesn't have any other variables which to compare to 
+       data = oysters,
+       main = "lattice: weight vs. volume by ID")
+
+#box-and-whisker plot
+bwplot(Volume ~ factor(ID),
+       data = oysters,
+       main = "lattice: volume by ID")
+
+#3 GGPLOT2
+library(ggplot2)
+
+#scatter plot with smoothing
+ggplot(oysters, aes(x = Weight, y = Volume, color = factor(Volume))) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "ggplot2: volume vs. weight with trend by volume")
+
+#faceted histogram
+ggplot(oysters, aes(Weight)) +
+  geom_histogram(binwidth = 1) +
+  facet_wrap(~ Volume) +
+  labs(title = "ggplot2: weight distribution by volume")
