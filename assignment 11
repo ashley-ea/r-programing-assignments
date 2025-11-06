@@ -1,0 +1,36 @@
+#given code with a bug
+
+tukey_multiple <- function(x) {
+  outliers <- array(TRUE, dim = dim(x))
+  for (j in 1:ncol(x)) {
+    outliers[, j] <- outliers[, j] && tukey.outlier(x[, j]) #this line contains the bug with the double "&"
+  }
+  outlier.vec <- vector("logical", length = nrow(x))
+  for (i in 1:nrow(x)) {
+    outlier.vec[i] <- all(outliers[i, ])
+  }
+  return(outlier.vec)
+}
+
+#reproduce the error and test matrix
+set.seed(123)
+test_mat <- matrix(rnorm(50), nrow = 10, ncol = 5)
+tukey_multiple(test_mat)
+#states error in outliers[, j] && tukey.outlier(x[, j]) : 'length = 10' in coercion to 'logical(1)'
+
+
+#fixed code 
+corrected_tukey <- function(x) {
+  outliers <- array(TRUE, dim = dim(x))
+  for (j in seq_len(ncol(x))) {
+    outliers[, j] <- outliers[, j] & tukey.outlier(x[, j])
+  }
+  outlier.vec <- logical(nrow(x))
+  for (i in seq_len(nrow(x))) {
+    outlier.vec[i] <- all(outliers[i, ])
+  }
+  outlier.vec
+}
+#print corrected
+corrected_tukey(test_mat)
+
